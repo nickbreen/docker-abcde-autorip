@@ -314,4 +314,4 @@ cdenc ()
 while true
 do
 	main
-done
+done | logger
