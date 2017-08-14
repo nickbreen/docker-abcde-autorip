@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # TODO:
 #	Add paranoia.
 #	Fix logger messages.
@@ -306,8 +306,6 @@ cdenc ()
 	rm -r "$PROCDIR"
 	
 }
-
-set -x
 
 sv -w 5 up syslog-ng
 
