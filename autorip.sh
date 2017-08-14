@@ -228,7 +228,7 @@ cdenc ()
 		
 	logger -p $LOGDEST.info "Info ($PROCESS): Starting encoding."
 	
-	abcde -Nx -d $CDROM $VALIDTRACKS > /dev/null 2>&1
+	abcde -V -Nx -d $CDROM $VALIDTRACKS > /dev/null 2>&1
 		
 
 	# If the disc is unknwon, give a warning and unique folder name.
