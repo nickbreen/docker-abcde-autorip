@@ -1,6 +1,6 @@
 FROM ubuntu:xenial
 
-RUN apt update && DEBIAN_FRONTEND=noninteractivr apt install --no-suggests -y abcde cdparanoia lame eyed3 imagemagick glyrc && apt clean 
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-suggests -y abcde cdparanoia lame eyed3 imagemagick glyrc gunzip && apt-get clean 
 ARG UID=1000
 ARG GID
 ARG LOGIN=autorip
