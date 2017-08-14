@@ -12,7 +12,7 @@ ExecStartPre=/usr/bin/docker create \
     --name %p \
     --volume "/srv/mythtv/music:/srv" \
     --device "/dev/sr0:/dev/sr0" \
-    --tmpfs /tmp:rw --tmpfs /var/tmp:rw \
+    --tmpfs /tmp --tmpfs /var/tmp \
     autorip
 ExecStart=/usr/bin/docker start --attach %p
 ExecReload=/usr/bin/docker restart %p
