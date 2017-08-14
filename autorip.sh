@@ -45,7 +45,7 @@ LOCTEMP="$TMP"
 
 # LOGDEST
 # The syslog facility to use for logging purposes.
-LOGDEST="local3"
+LOGDEST="user"
 
 
 # Oher variables (Do not set)
@@ -86,7 +86,7 @@ main ()
 	elif [ "$CURCD" != "$LASTSTART" ] && [ "$(ps --no-heading -C cdparanoia)" != "" ]
 	then
 
-		logger -p $LOGDEST.info "Error ($LASTSTART): Disc removed while encoding!"						
+		logger -p $LOGDEST.error "Error ($LASTSTART): Disc removed while encoding!"
 		killall -KILL cdparanoia
 		
 		# Reset the last start, because it wasn't.
