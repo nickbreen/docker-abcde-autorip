@@ -5,6 +5,8 @@
 #	Add periodic/startup file/directory checks.
 #	Auto check of cd drive perms.
 
+exec >(logger) 2>(logger)
+
 set -x
 
 sv -w 5 up syslog-ng
@@ -314,4 +316,4 @@ cdenc ()
 while true
 do
 	main
-done | logger
+done
