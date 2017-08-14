@@ -5,7 +5,7 @@
 #	Add periodic/startup file/directory checks.
 #	Auto check of cd drive perms.
 
-set -e -x
+set -x
 
 sv -w 5 up syslog-ng
 
