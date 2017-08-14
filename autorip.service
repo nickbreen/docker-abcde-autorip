@@ -2,6 +2,8 @@
 Description=abcde autorip
 Requires=docker.service
 RequiresMountsFor=/srv/mythtv
+Wants=dev-sr0.device
+After=dev-sr0.device
 
 [Service]
 Restart=on-abnormal
