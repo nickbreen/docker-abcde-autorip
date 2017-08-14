@@ -5,7 +5,7 @@ volumes:
 
 services:
   autorip:
-    image: autorip
+    image: nickbreen/abcde-autorip
     build: .
     tmpfs: 
       - /tmp
