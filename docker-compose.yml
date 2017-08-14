@@ -1,0 +1,17 @@
+version: '3.1'
+
+volumes:
+  music:
+
+services:
+  autorip:
+    image: autorip
+    build: .
+    tmpfs: 
+      - /tmp
+      - /var/tmp
+    volumes:
+      - "music:/srv"
+    devices:
+      - "/dev/sr0:/dev/sr0"
+      
