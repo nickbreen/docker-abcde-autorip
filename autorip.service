@@ -4,7 +4,7 @@ Requires=docker.service
 RequiresMountsFor=/srv/mythtv
 
 [Service]
-Restart=on=abnormal
+Restart=on-abnormal
 ExecStartPre=-/usr/bin/docker kill %p
 ExecStartPre=-/usr/bin/docker rm %p
 ;ExecStartPre=/usr/bin/docker pull autorip
