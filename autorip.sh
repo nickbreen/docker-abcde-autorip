@@ -5,6 +5,8 @@
 #	Add periodic/startup file/directory checks.
 #	Auto check of cd drive perms.
 
+set -e -x
+
 echo "Autorip 0.1.3 started."
 
 # Set script local variables
@@ -18,7 +20,6 @@ FREEMIN="750"
 # in if it's not in already, this isn't exact, as a cycle is a bit more
 # then a second, but it comes out to about 3 hours.
 TIMEOUT=21600
-
 
 # CDROM
 # The cd-rom device to be used.
@@ -66,11 +67,6 @@ TIME=0
 REENC=0
 
 # Reset the status of running.
-
-echo 0 > "$BASE/lib/stop"
-
-rm -r "$TMP"
-mkdir "$TMP"
 
 main ()
 {
@@ -313,7 +309,7 @@ cdenc ()
 	
 }
 
-until [[ $(< "$BASE/lib/stop") == 1 ]]
+while true
 do
 	main
 done
