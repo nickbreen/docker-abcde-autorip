@@ -1,5 +1,5 @@
 [Unit]
-Description=abcde auto ripper
+Description=abcde autorip
 Requires=docker.service
 RequiresMountsFor=/srv/mythtv
 
