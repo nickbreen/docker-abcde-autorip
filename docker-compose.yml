@@ -13,5 +13,5 @@ services:
     volumes:
       - "music:/srv"
     devices:
-      - "/dev/sr0:/dev/sr0"
+      - "/dev/sr0:/dev/cdrom"
       
