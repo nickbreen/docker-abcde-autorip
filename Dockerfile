@@ -1,10 +1,6 @@
-FROM ubuntu:xenial
+FROM phusion/baseimage
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-suggests -y abcde cdparanoia lame eyed3 imagemagick glyrc gunzip && apt-get clean 
-ARG UID=1000
-ARG GID
-ARG LOGIN=autorip
-RUN useradd -o -u ${UID} ${GID:+-g ${GID}} $LOGIN
-USER ${LOGIN}
-CMD gunzip /usr/share/doc/abcde/autorip.sh.gz | /bin/bash
-
+RUN apt-get update && apt-get install -y --no-install-recommends abcde cdparanoia lame eyed3 imagemagick glyrc && apt-get clean 
+COPY autorip.sh /etc/service/autorip/run
+COPY abcde.conf /etc/abcde.conf
+VOLUME /dev/cdrom
