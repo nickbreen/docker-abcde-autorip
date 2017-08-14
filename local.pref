@@ -1,0 +1,3 @@
+Package: bsd-mailx
+Pin: release *
+Pin-Priority: -1
