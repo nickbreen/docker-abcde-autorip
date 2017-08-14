@@ -22,7 +22,7 @@ TIMEOUT=21600
 
 # CDROM
 # The cd-rom device to be used.
-CDROM="/dev/cdrom"
+CDROM="/dev/sr0"
 
 # BASE
 # The folder to be used for all of the actions
