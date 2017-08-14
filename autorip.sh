@@ -37,15 +37,15 @@ DONE="/srv"
 
 # TMP
 # Defaukt temporary directory.
-TMP="/tmp"
+TMP=$(mktemp -d)
 
 # REMTEMP
 # Remote temporary directory. (currently unused)
-REMTEMP="/tmp"
+REMTEMP="$TMP"
 
 # LOCTEMP
 # Local temporary directory.
-LOCTEMP="/tmp"
+LOCTEMP="$TMP"
 
 # LOGDEST
 # The syslog facility to use for logging purposes.
