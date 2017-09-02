@@ -5,7 +5,11 @@ volumes:
 
 services:
   autorip:
+<<<<<<< HEAD
     image: nickbreen/abcde-autorip
+=======
+    image: autorip
+>>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
     build: .
     tmpfs: 
       - /tmp
@@ -13,4 +17,9 @@ services:
     volumes:
       - "music:/srv"
     devices:
+<<<<<<< HEAD
       - "/dev/sr0:/dev/cdrom"
+=======
+      - "/dev/sr0:/dev/sr0"
+      
+>>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8

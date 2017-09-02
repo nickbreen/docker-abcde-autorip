@@ -15,6 +15,7 @@ ExecStartPre=/usr/bin/docker create \
     --volume "/srv/mythtv/music:/srv" \
     --device "/dev/sr0:/dev/cdrom" \
     --tmpfs /tmp --tmpfs /var/tmp \
+    --add-cap SYS_RAWIO \
     nickbreen/abcde-autorip
 ExecStart=/usr/bin/docker start --attach %p
 ExecReload=/usr/bin/docker restart %p
