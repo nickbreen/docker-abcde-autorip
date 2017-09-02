@@ -1,0 +1,1 @@
+SUBSYSTEM=="block", KERNEL=="sr0", ACTION=="change", TAG+="systemd", ENV{SYSTEMD_WANTS}="autorip.service"
