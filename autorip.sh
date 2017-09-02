@@ -1,32 +1,14 @@
 #!/bin/bash
-<<<<<<< HEAD
 
 . /etc/container_environment.sh
 
 # FREEMIN
 # The minimum free space to have on the local TMP directory.
 FREEMIN=${FREEMIN:-750}
-=======
-# TODO:
-#	Add paranoia.
-#	Fix logger messages.
-#	Add periodic/startup file/directory checks.
-#	Auto check of cd drive perms.
-
-echo "Autorip 0.1.3 started."
-
-# Set script local variables
-
-# FREEMIN
-# The minimum free space to have on the local TMP directory.
-FREEMIN="750"
-
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 # TIMEOUT
 # The timeout, in seconds (approx), for the cd-tray to be sucked back 
 # in if it's not in already, this isn't exact, as a cycle is a bit more
 # then a second, but it comes out to about 3 hours.
-<<<<<<< HEAD
 TIMEOUT=${TIMEOUT:-21600}
 # CDROM
 # The cd-rom device to be used.
@@ -50,41 +32,6 @@ LOCTEMP=${LOCTEMP:-$TMP}
 # The syslog facility to use for logging purposes.
 LOGDEST=${LOGDEST}
 # Other variables (Do not set)
-=======
-TIMEOUT=21600
-
-# CDROM
-# The cd-rom device to be used.
-CDROM="/dev/sr0"
-
-# BASE
-# The folder to be used for all of the actions
-BASE="/var"
-
-# DONE
-# The destination of the encoded files.
-DONE="/srv"
-
-# TMP
-# Defaukt temporary directory.
-TMP=$(mktemp -d)
-
-# REMTEMP
-# Remote temporary directory. (currently unused)
-REMTEMP="$TMP"
-
-# LOCTEMP
-# Local temporary directory.
-LOCTEMP="$TMP"
-
-# LOGDEST
-# The syslog facility to use for logging purposes.
-LOGDEST="local3"
-
-
-# Oher variables (Do not set)
-
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 # LASTSTART - Last CD in the drive that was encoded.
 # LASTDONE - Last CD that was finished encoding.
 # TIME	 - Approximately how many seconds have passed without having a cd in the drive.
@@ -94,7 +41,6 @@ LOGDEST="local3"
 # PROCDIR - The working directory of a process.
 # DISCNAME - A process local variable that's just the name of the finished disc.
 # DONELOCK - A timer for waiting for an add to the DB. Wait no more than 60 seconds.
-<<<<<<< HEAD
 LASTSTART=""
 TIME=0
 REENC=0
@@ -104,28 +50,11 @@ main ()
 	getcurcd
 	# If the cd in the drive is currently being encoded, don't try to encode it.
 	# Just sleep for 120 seconds and try again later.	
-=======
-
-LASTSTART=""
-TIME=0
-REENC=0
-
-# Reset the status of running.
-
-main ()
-{
-	getcurcd
-	
-	# If the cd in the drive is currently being encoded, don't try to encode it.
-	# Just sleep for 120 seconds and try again later.	
-
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	if [ "$CURCD" != "" ] && [ "$CURCD" = "$LASTSTART" ]
 	then	
 		sleep 120
 		TIME=0
 		return 0
-<<<<<<< HEAD
 	# If the CD isn't the same as the last one started, and cdparanoia is running
 	# Assume shit has hit the fan and kill it to end the current process.
 	# The process will die on it's own.
@@ -139,35 +68,11 @@ main ()
 		return 0
 	# If there's nothing in the drive, and there's no timeout yet, increase.
 	# If something was in the drive, the function would return without encoding it.
-=======
-		
-	# If the CD isn't the same as the last one started, and cdparanoia is running
-	# Assume shit has hit the fan and kill it to end the current process.
-	# The process will die on it's own.
-	
-	elif [ "$CURCD" != "$LASTSTART" ] && [ "$(ps --no-heading -C cdparanoia)" != "" ]
-	then
-
-		logger -p $LOGDEST.info "Error ($LASTSTART): Disc removed while encoding!"						
-		killall -KILL cdparanoia
-		
-		# Reset the last start, because it wasn't.
-		
-		LASTSTART=""
-		
-		sleep 10
-		return 0
-	
-	# If there's nothing in the drive, and there's no timeout yet, increase.
-	# If something was in the drive, the function would return without encoding it.
-	
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	elif [ $TIME -lt $TIMEOUT ] && [ "$CURCD" = "" ]
 	then
 	 	TIME=$(($TIME+15))
 		sleep 15
 		return 0
-<<<<<<< HEAD
 	# If the cd has been sticking out for the timeout period (which is approx three hours).
 	# Suck it back in. This could be used to send a message to the domain, or cause beeping.	
 	elif [ $TIME -ge $TIMEOUT ]
@@ -177,32 +82,10 @@ main ()
 		return 0
 	fi
 	# Eject the CD if the last CD processed is sucked (or put) back in.	
-=======
-	
-	# If the cd has been sticking out for the timeout period (which is approx three hours).
-	# Suck it back in. This could be used to send a message to the domain, or cause beeping.	
-		
-	elif [ $TIME -ge $TIMEOUT ]
-	then
-		timeout
-		
-		TIME=0
-		
-		return 0
-	fi
-
-	# Eject the CD if the last CD processed is sucked (or put) back in.	
-
-
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	# If there is a cd in the drive
 	# Do not encode the last CD to go through the encoding process.
 	# This would cause the same CD to be re-re-rencoded if left in the drive
 	# for too long.
-<<<<<<< HEAD
-=======
-
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	if [ "$CURCD" != "" ] && [ "$CURCD" != "$(< "$BASE/lib/LASTDONE")" ] &! [ -d "$TMP/$(echo $CURCD | cut -f 1 -d \ )" ]
 	then
 		
@@ -233,13 +116,7 @@ getcurcd()
 {
 	# Check for a cd. If cd-discid exits successfully, then set the variable.
 	# If it exits with a 0 (backwards, I know), then blank it.
-<<<<<<< HEAD
 	if $(cd-discid $CDROM > /dev/null 2>&1)
-=======
-
-	if $(cd-discid $CDROM > /dev/null 2>&1)
-
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	then
 		CURCD=$(cd-discid $CDROM 2>&1)
 	else
@@ -248,7 +125,6 @@ getcurcd()
 	return 0
 }
 
-<<<<<<< HEAD
 timeout()
 {
 	eject -t $CDROM && getcurcd
@@ -256,24 +132,10 @@ timeout()
 	if [ "$CURCD" = "$(< "$BASE/lib/LASTDONE")" ] 
 	then
 		logger ${LOGDEST:+-p $LOGDEST.warn} "CD Left (or put back) in drive."
-=======
-
-
-timeout()
-{
-	eject -t $CDROM && getcurcd
-
-	# If the cd was the last done, assume we timed out.
-
-	if [ "$CURCD" = "$(< "$BASE/lib/LASTDONE")" ] 
-	then
-		logger -p $LOGDEST.error "CD Left (or put back) in drive."
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 		eject $CDROM
 		beep -r 4
 		return 0
 	fi
-<<<<<<< HEAD
 	return 0
 }
 
@@ -282,56 +144,24 @@ timeout()
 cdenc ()
 {	
 	# Check to make sure the cd wasn't changed or removed.
-=======
-
-	return 0
-}
-
-
-# CD Encoder function. The workhorse.
-# Note: Only call when CD is in drive, else exit.
-
-cdenc ()
-{	
-	# Check to make sure the cd wasn't changed or removed.
-		
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	if [ "$(cd-discid $CDROM 2>&1)" != "$CURCD" ]
 	then
 		return 0
 	fi
-<<<<<<< HEAD
 	# Set this process's id.
-=======
-	
-	# Set this process's id.
-	
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	local PROCESS="$(echo $CURCD | cut -f 1 -d \ )"
 	local THISDISC="$CURCD"
 	local PROCDIR="$TMP/$PROCESS"
 	local DONELOCK=0
-<<<<<<< HEAD
 	# Make a work folder
 	rm -fr "$PROCDIR"
 	mkdir "$PROCDIR"
 	cd "$PROCDIR"
-=======
-
-	# Make a work folder
-	
-	rm -fr "$PROCDIR"
-	mkdir "$PROCDIR"
-	cd "$PROCDIR"
-
-	
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	# Okay, abcde has a bug where it tries to rip data cd's. But the version that fixes it itself has
 	# even more. So instead of trying to install the new version, which doesn't work, we use a command
 	# similar to the one ABCDE uses to determine the number of valid tracks (since it assumes the data
 	# track always occurs at the end, which in some game CD's it doesn't) and pass it to the command
 	# line. Yes, it really is one line.
-<<<<<<< HEAD
 	local VALIDTRACKS="$(cdparanoia -d $CDROM -Q 2>&1 | egrep '^[[:space:]]+[[:digit:]]' | awk '{print $1}' | tr -d "." | tr '\n' ' ')"
 	# Do it. Do it.	
 	logger ${LOGDEST:+-p $LOGDEST.info} "Info ($PROCESS): Starting encoding."
@@ -356,81 +186,22 @@ cdenc ()
 	echo "$THISDISC" > "$PROCDIR/$DISCNAME/disc_id"
 	logger ${LOGDEST:+-p $LOGDEST.info} "Info ($PROCESS): Encoding of "$DISCNAME" completed successfully."
 	# Wait for the done database to be ready...
-=======
-	
-	local VALIDTRACKS="$(cdparanoia -d $CDROM -Q 2>&1 | egrep '^[[:space:]]+[[:digit:]]' | awk '{print $1}' | tr -d "." | tr '\n' ' ')"
-	
-	# Do it. Do it.	
-		
-	logger -p $LOGDEST.info "Info ($PROCESS): Starting encoding."
-	
-	abcde -V -Nx -d $CDROM $VALIDTRACKS  2>&1 | logger -p $LOGDEST.info
-		
-
-	# If the disc is unknwon, give a warning and unique folder name.
-	
-	if [ -d "$PROCDIR/Unknown Artist - Unknown Album/" ]
-	then
-		logger -p $LOGDEST.warn "Warning ($PROCESS): Processed successfully, but info unknown."
-		mv "$PROCDIR/Unknown Artist - Unknown Album" "$PROCDIR/Unknown Disc - ID $PROCESS"
-	
-	fi
-	
-	# If more than one folder is left, or the abcde.process folder is left over,
-	# or if there's nothing in the directory, something has gone WRONG.
-	
-	if [ $(ls -1 "$PROCDIR" | wc -l) -gt 1 ] || [ "$(ls -1 "$PROCDIR")" = "abcde.$PROCESS" ] || [ "$(ls -1 "$PROCDIR")" = "" ]
-	then
-		logger -p $LOGDEST.error "Error ($PROCESS): More than one folder or something very bad happened."
-		rm -r "$PROCDIR"
-		return 0
-	fi
-		
-	# Note: Don't declare discname until process is finished. Now is fine.
-	
-	local DISCNAME=`ls -1 "$PROCDIR"`
-	
-	# Put the current disc's ID into a file in the disc's folder, JIC
-	
-	echo "$THISDISC" > "$PROCDIR/$DISCNAME/disc_id"
-	
-	
-	logger -p $LOGDEST.info "Info ($PROCESS): Encoding of "$DISCNAME" completed successfully."
-	
-	
-	# Wait for the done database to be ready...
-
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	until ! [ -f "$BASE/lib/done.lock" ] || [ $DONELOCK -ge 60 ]
 	do
 	sleep 10
 	DONELOCK=$(($DONELOCK+10)) 
 	done
-<<<<<<< HEAD
 	# Then add this disc to it.	
 	if [ $(grep "$CURCD" $BASE/lib/done.db) = "" ] 
-=======
-
-	# Then add this disc to it.	
-	if [ "`grep "$CURCD" $BASE/lib/done.db`" = "" ] 
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
  	then	
 		touch "$BASE/lib/done.lock"
 		cat "$BASE/lib/done.db" "$PROCDIR/$DISCNAME/disc_id" > "$BASE/lib/done.new"
 		mv "$BASE/lib/done.new" "$BASE/lib/done.db"
 		rm "$BASE/lib/done.lock"
 	else
-<<<<<<< HEAD
 		logger ${LOGDEST:+-p $LOGDEST.notice} "Not adding $PROCESS to done.db" 
 	fi
 	# Move the process's completed directory into the done folder.
-=======
-		logger -p $LOGDEST.notice "Not adding $PROCESS to done.db" 
-	fi
-	
-	# Move the process's completed directory into the done folder.
-	
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	if ! [ -d "$DONE/$DISCNAME" ]
 	then
 		mv -f "$PROCDIR/$DISCNAME" "$DONE/"
@@ -439,26 +210,14 @@ cdenc ()
 		rm -r "$DONE/$DISCNAME"
 		mv -f "$PROCDIR/$DISCNAME" "$DONE/"
 	fi
-<<<<<<< HEAD
 	# A file must be used here because the variable is lost when the function exits sometimes.	
 	echo "$THISDISC" > "$BASE/lib/LASTDONE"
 	# If I was the last disc started, and I'm done, clear the laststart variable so the last disc
 	# encoded can be re-encoded if they really want to.
-=======
-	
-	# A file must be used here because the variable is lost when the function exits sometimes.	
-
-	echo "$THISDISC" > "$BASE/lib/LASTDONE"
-	
-	# If I was the last disc started, and I'm done, clear the laststart variable so the last disc
-	# encoded can be re-encoded if they really want to.
-	
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
 	if [ "$THISDISC" = "$LASTSTART" ]
 	then
 		LASTSTART=""
 	fi
-<<<<<<< HEAD
 	# Remove the process temp directory and call it a day.
 	rm -r "$PROCDIR"
 }
@@ -469,19 +228,3 @@ while true
 do
 	main
 done | logger ${LOGDEST:+-p $LOGDEST}
-=======
-
-	
-	# Remove the process temp directory and call it a day.
-	
-	rm -r "$PROCDIR"
-	
-}
-
-sv -w 5 up syslog-ng
-
-while true
-do
-	main
-done | logger -p $LOGDEST
->>>>>>> ddcea0aa5faec9cadcca448878cb8db783ae4be8
