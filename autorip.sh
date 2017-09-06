@@ -21,16 +21,15 @@ BASE=${BASE:-/var}
 DONE=${DONE:-/srv}
 # TMP
 # Default temporary directory.
-TMP=${REMTEMP:-$(mktemp -d)}
-# REMTEMP
-# Remote temporary directory. (currently unused)
-REMTEMP=${REMTEMP:-$TMP}
-# LOCTEMP
-# Local temporary directory.
-LOCTEMP=${LOCTEMP:-$TMP}
+TMP=${TMP:-$(mktemp -d)}
 # LOGDEST
 # The syslog facility to use for logging purposes.
-LOGDEST=${LOGDEST}
+LOGDEST=${LOGDEST:-user}
+# Set up syslog-ing
+exec 1> >(logger ${LOGDEST:+-p ${LOGDEST}.info}) 2> >(logger ${LOGDEST:+-p ${LOGDEST}.error})
+# Wait for syslog
+sv -w 5 up syslog-ng
+
 # Other variables (Do not set)
 # LASTSTART - Last CD in the drive that was encoded.
 # LASTDONE - Last CD that was finished encoding.
@@ -60,7 +59,7 @@ main ()
 	# The process will die on it's own.
 	elif [ "$CURCD" != "$LASTSTART" ] && [ "$(ps --no-heading -C cdparanoia)" != "" ]
 	then
-		logger ${LOGDEST:+-p $LOGDEST.error} "Error ($LASTSTART): Disc removed while encoding!"
+		>&2 echo "Error ($LASTSTART): Disc removed while encoding!"
 		killall -KILL cdparanoia
 		# Reset the last start, because it wasn't.
 		LASTSTART=""
@@ -116,11 +115,11 @@ getcurcd()
 {
 	# Check for a cd. If cd-discid exits successfully, then set the variable.
 	# If it exits with a 0 (backwards, I know), then blank it.
-	if $(cd-discid $CDROM > /dev/null 2>&1)
+	if cd-discid $CDROM
 	then
-		CURCD=$(cd-discid $CDROM 2>&1)
-	else
 		CURCD=""
+	else
+		CURCD=$(cd-discid $CDROM 2>&1)
 	fi
 	return 0
 }
@@ -131,7 +130,7 @@ timeout()
 	# If the cd was the last done, assume we timed out.
 	if [ "$CURCD" = "$(< "$BASE/lib/LASTDONE")" ] 
 	then
-		logger ${LOGDEST:+-p $LOGDEST.warn} "CD Left (or put back) in drive."
+		echo "CD Left (or put back) in drive."
 		eject $CDROM
 		beep -r 4
 		return 0
@@ -164,19 +163,19 @@ cdenc ()
 	# line. Yes, it really is one line.
 	local VALIDTRACKS="$(cdparanoia -d $CDROM -Q 2>&1 | egrep '^[[:space:]]+[[:digit:]]' | awk '{print $1}' | tr -d "." | tr '\n' ' ')"
 	# Do it. Do it.	
-	logger ${LOGDEST:+-p $LOGDEST.info} "Info ($PROCESS): Starting encoding."
-	abcde -V -Nx -d $CDROM $VALIDTRACKS  2>&1 | logger ${LOGDEST:+-p $LOGDEST.info}
+	echo "Info ($PROCESS): Starting encoding."
+	abcde -V -Nx -d $CDROM $VALIDTRACKS
 	# If the disc is unknwon, give a warning and unique folder name.
 	if [ -d "$PROCDIR/Unknown Artist - Unknown Album/" ]
 	then
-		logger ${LOGDEST:+-p $LOGDEST.warn} "Warning ($PROCESS): Processed successfully, but info unknown."
+		echo "Warning ($PROCESS): Processed successfully, but info unknown."
 		mv "$PROCDIR/Unknown Artist - Unknown Album" "$PROCDIR/Unknown Disc - ID $PROCESS"
 	fi
 	# If more than one folder is left, or the abcde.process folder is left over,
 	# or if there's nothing in the directory, something has gone WRONG.
 	if [ $(ls -1 "$PROCDIR" | wc -l) -gt 1 ] || [ "$(ls -1 "$PROCDIR")" = "abcde.$PROCESS" ] || [ "$(ls -1 "$PROCDIR")" = "" ]
 	then
-		logger ${LOGDEST:+-p $LOGDEST.error} "Error ($PROCESS): More than one folder or something very bad happened."
+		>&2 echo "Error ($PROCESS): More than one folder or something very bad happened."
 		rm -r "$PROCDIR"
 		return 0
 	fi
@@ -184,7 +183,7 @@ cdenc ()
 	local DISCNAME=`ls -1 "$PROCDIR"`
 	# Put the current disc's ID into a file in the disc's folder, JIC
 	echo "$THISDISC" > "$PROCDIR/$DISCNAME/disc_id"
-	logger ${LOGDEST:+-p $LOGDEST.info} "Info ($PROCESS): Encoding of "$DISCNAME" completed successfully."
+	echo "Info ($PROCESS): Encoding of "$DISCNAME" completed successfully."
 	# Wait for the done database to be ready...
 	until ! [ -f "$BASE/lib/done.lock" ] || [ $DONELOCK -ge 60 ]
 	do
@@ -199,7 +198,7 @@ cdenc ()
 		mv "$BASE/lib/done.new" "$BASE/lib/done.db"
 		rm "$BASE/lib/done.lock"
 	else
-		logger ${LOGDEST:+-p $LOGDEST.notice} "Not adding $PROCESS to done.db" 
+		echo "Not adding $PROCESS to done.db" 
 	fi
 	# Move the process's completed directory into the done folder.
 	if ! [ -d "$DONE/$DISCNAME" ]
@@ -222,9 +221,8 @@ cdenc ()
 	rm -r "$PROCDIR"
 }
 
-sv -w 5 up syslog-ng
-echo "Autorip 0.1.3 started." | logger ${LOGDEST:+-p $LOGDEST}
+echo "Autorip 0.1.3 started."
 while true
 do
 	main
-done | logger ${LOGDEST:+-p $LOGDEST}
+done
