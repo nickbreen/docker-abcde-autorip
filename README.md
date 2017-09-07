@@ -18,10 +18,9 @@ Install `autorip.service` on the host. E.g. in `cloud-config.yml`:
             Description=abcde autorip
             Requires=docker.service
             RequiresMountsFor=/srv/mythtv
-            Wants=dev-sr0.device
-            After=dev-sr0.device
 
             [Service]
+            Restart=on-abnormal
             Type=oneshot
             ExecStartPre=-/usr/bin/docker kill %p
             ExecStartPre=-/usr/bin/docker rm %p
