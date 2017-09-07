@@ -4,12 +4,13 @@ Insert audio CD in optical drive, remove when it is ejected!
 
 # Installation
 
-Install `autorip.service` on the host. E.g. in `cloud-config.yml`:
+Install `autorip.service` on the host. E.g. in `cloud-config.yml` for CoreOS:
 
 ```yaml
 coreos:
     units:
         - name: autorip.service
+          enable: true
           content: |
             [Unit]
             Description=abcde autorip
