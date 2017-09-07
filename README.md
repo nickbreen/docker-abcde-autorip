@@ -1,7 +1,13 @@
+# Usage
+
+Insert audio CD in optical drive, remove when it is ejected!
+
+# Installation
 
 Install `autorip.service` on the host. E.g. in `cloud-config.yml`:
 
-    coreos:
+```yaml
+coreos:
     units:
         - name: autorip.service
           content: |
@@ -31,3 +37,4 @@ Install `autorip.service` on the host. E.g. in `cloud-config.yml`:
 
             [Install]
             WantedBy=dev-cdrom.device
+```

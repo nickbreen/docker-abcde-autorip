@@ -13,6 +13,6 @@ services:
     volumes:
       - "music:/srv"
     devices:
-      - "/dev/sr0:/dev/cdrom"
+      - "/dev/cdrom:/dev/cdrom"
     cap_add:
       - SYS_RAWIO
