@@ -1,13 +1,4 @@
 
-Install `autorip.rules` to `/etc/udev/rules.d/99-autorip.rules` on the host. E.g. in `cloud-config.yml`:
-
-    write_files:
-     - path: /etc/udev/rules.d/99-autorip.rules 
-       permissions: "0644"
-       owner: root
-       contents: |
-         SUBSYSTEM=="block", KERNEL=="sr0", ACTION=="change", TAG+="systemd", ENV{SYSTEMD_WANTS}="autorip.service"
-
 Install `autorip.service` on the host. E.g. in `cloud-config.yml`:
 
     coreos:
@@ -18,9 +9,11 @@ Install `autorip.service` on the host. E.g. in `cloud-config.yml`:
             Description=abcde autorip
             Requires=docker.service
             RequiresMountsFor=/srv/mythtv
+            After=dev-cdrom.device
+            BindsTo=dev-cdrom.device
+            Requisite=dev-cdrom.device
 
             [Service]
-            Restart=on-abnormal
             Type=oneshot
             ExecStartPre=-/usr/bin/docker kill %p
             ExecStartPre=-/usr/bin/docker rm %p
@@ -28,10 +21,13 @@ Install `autorip.service` on the host. E.g. in `cloud-config.yml`:
             ExecStartPre=/usr/bin/docker create \
                 --name %p \
                 --volume "/srv/mythtv/music:/srv" \
-                --device "/dev/sr0:/dev/cdrom" \
+                --device "/dev/cdrom:/dev/cdrom" \
                 --tmpfs /tmp --tmpfs /var/tmp \
                 --cap-add SYS_RAWIO \
                 nickbreen/abcde-autorip
             ExecStart=/usr/bin/docker start --attach %p
             ExecReload=/usr/bin/docker restart %p
             ExecStop=/usr/bin/docker stop --time 5 %p
+
+            [Install]
+            WantedBy=dev-cdrom.device

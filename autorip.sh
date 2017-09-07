@@ -5,6 +5,5 @@ do
 	sleep 5 # Wait a bit for syslog to start
 done
 exec 1> >(logger -t autorip) 2> >(logger -e  -t autorip)
-echo autorip $CDROM to $OUTPUTDIR
 # Do it. Do it.	
 abcde -N -d $CDROM -P
